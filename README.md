@@ -29,6 +29,8 @@ together.
 | `/wishlist` | Wishlist: add to cart, remove (with confirmation), unavailable items flagged |
 | `/health` | Liveness probe for the host; doesn't call the backend |
 
+On small screens the category bar becomes a menu button in the header.
+
 Every data page has loading (skeletons), empty, and error states, and
 unknown products/categories show a not-found page.
 
@@ -125,10 +127,21 @@ docker-compose.yml      Runs this service on its own (see "Running with Docker")
 
 ## Testing
 
-`npm test` covers the logic that isn't visual: filter parsing (untrusted URL
-input), the API client (headers, error mapping, network failures), the
-customer id (corrupt/blocked storage, plain-http browsers) and formatting.
-The cart and stock rules are tested in the backend, where they live.
+`npm test` runs two kinds of tests (Vitest; component tests use Testing Library
+in jsdom):
+
+- **Logic:** filter parsing (untrusted URL input), the API client (headers, error
+  mapping, network failures), the customer id (corrupt/blocked storage, plain-http
+  browsers) and formatting.
+- **Components and pages:** the product card's stock rules (sold out, everything
+  already in the cart, the 99-per-product cap), filter validation and URL building,
+  cursor "Load more" without duplicates (and its error/retry), the cart and
+  wishlist pages in every state (loading, error, empty, unavailable, over stock,
+  confirmations), the header search and mobile menu, and the shared dialog,
+  stepper and badges.
+
+The cart and stock *rules* are tested in the backend, where they live, and the flows
+across the whole stack are driven in a real browser by `ecommerce-admin-infra/e2e`.
 
 ## Deployment
 
