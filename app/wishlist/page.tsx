@@ -12,7 +12,7 @@ import { useStore } from "@/components/StoreProvider";
 import { EmptyState, ErrorState, TextSkeleton } from "@/components/states";
 
 function EntryCard({ entry, onRemove }: { entry: WishlistEntry; onRemove: (entry: WishlistEntry) => void }) {
-  const { addToCart, quantityInCart, isPending } = useStore();
+  const { addToCart, quantityInCart, isPending, categoryName } = useStore();
   const product = entry.product;
 
   if (!product) {
@@ -36,6 +36,9 @@ function EntryCard({ entry, onRemove }: { entry: WishlistEntry; onRemove: (entry
         <ProductImage src={product.imageUrl} alt={product.name} className={`aspect-square w-full ${soldOut ? "opacity-60" : ""}`} />
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-3">
+        {categoryName(product.categoryId) && (
+          <span className="text-xs font-medium uppercase tracking-wide text-slate-400">{categoryName(product.categoryId)}</span>
+        )}
         <Link href={href} className="line-clamp-2 text-sm font-medium text-slate-900 hover:underline">
           {product.name}
         </Link>

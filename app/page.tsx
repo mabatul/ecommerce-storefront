@@ -2,7 +2,7 @@ import Link from "next/link";
 import { catalog } from "@/lib/api";
 import { BRAND } from "@/lib/config";
 import { toApiQuery } from "@/lib/query";
-import type { Category, Product } from "@/lib/types";
+import type { Product } from "@/lib/types";
 import { ButtonLink } from "@/components/Button";
 import { ProductCard } from "@/components/ProductCard";
 import { EmptyState } from "@/components/states";
@@ -23,12 +23,11 @@ function Section({ title, href, children }: { title: string; href?: string; chil
   );
 }
 
-function Grid({ products, categories }: { products: Product[]; categories: Category[] }) {
-  const names = new Map(categories.map((c) => [c.categoryId, c.name]));
+function Grid({ products }: { products: Product[] }) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {products.map((p) => (
-        <ProductCard key={p.productId} product={p} categoryName={names.get(p.categoryId)} />
+        <ProductCard key={p.productId} product={p} />
       ))}
     </div>
   );
@@ -83,12 +82,12 @@ export default async function HomePage() {
 
       {featured.items.length > 0 && (
         <Section title="Featured products" href="/products">
-          <Grid products={featured.items} categories={categories} />
+          <Grid products={featured.items} />
         </Section>
       )}
 
       <Section title="Browse the catalog" href="/products">
-        <Grid products={latest.items} categories={categories} />
+        <Grid products={latest.items} />
       </Section>
     </div>
   );

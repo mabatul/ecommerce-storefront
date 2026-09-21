@@ -33,7 +33,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         <FilterBar key={key} filters={filters} categories={categories} basePath="/products" />
       </div>
       <div className="mt-6">
-        <ProductGrid key={key} initial={page} categories={categories} filters={filters} clearHref="/products" />
+        <ProductGrid key={key} initial={page} filters={filters} clearHref="/products" />
       </div>
     </div>
   );

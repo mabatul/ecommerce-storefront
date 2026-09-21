@@ -9,8 +9,9 @@ import { StockBadge } from "@/components/StockBadge";
 import { useStore } from "@/components/StoreProvider";
 import { WishlistButton } from "@/components/WishlistButton";
 
-export function ProductCard({ product, categoryName }: { product: Product; categoryName?: string }) {
-  const { addToCart, quantityInCart, isPending } = useStore();
+export function ProductCard({ product }: { product: Product }) {
+  const { addToCart, quantityInCart, isPending, categoryName: nameOf } = useStore();
+  const categoryName = nameOf(product.categoryId);
   const soldOut = product.stock <= 0;
   const atLimit = quantityInCart(product.productId) >= maxOrderable(product.stock);
   const href = `/products/${encodeURIComponent(product.productId)}`;

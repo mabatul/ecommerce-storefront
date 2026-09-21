@@ -49,7 +49,7 @@ export default async function CategoryPage({ params, searchParams }: { params: P
         <FilterBar key={key} filters={{ ...filters, category: undefined }} categories={categories} basePath={basePath} lockCategory />
       </div>
       <div className="mt-6">
-        <ProductGrid key={key} initial={page} categories={categories} filters={filters} clearHref={basePath} />
+        <ProductGrid key={key} initial={page} filters={filters} clearHref={basePath} />
       </div>
     </div>
   );

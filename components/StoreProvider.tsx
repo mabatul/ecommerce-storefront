@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ApiError, shop } from "@/lib/api";
 import { getCustomerId } from "@/lib/customer";
-import type { CartView, WishlistView } from "@/lib/types";
+import type { CartView, Category, WishlistView } from "@/lib/types";
 import { useToast } from "@/components/Toast";
 
 type Status = "loading" | "ready" | "error";
@@ -15,6 +15,7 @@ interface StoreValue {
   wishlist: WishlistView | null;
   cartCount: number;
   wishlistCount: number;
+  categoryName: (categoryId: string) => string | undefined;
   quantityInCart: (productId: string) => number;
   inWishlist: (productId: string) => boolean;
   isPending: (key: string) => boolean;
@@ -32,7 +33,7 @@ const StoreContext = createContext<StoreValue | null>(null);
 
 // Holds the anonymous customer's cart and wishlist. Every change goes to the API, which
 // answers with the full updated view, so what's shown is always what the server has.
-export function StoreProvider({ children }: { children: ReactNode }) {
+export function StoreProvider({ children, categories = [] }: { children: ReactNode; categories?: Category[] }) {
   const toast = useToast();
   const customerId = useRef<string | null>(null);
   const [cart, setCart] = useState<CartView | null>(null);
@@ -99,6 +100,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       wishlist,
       cartCount: cart?.totalQuantity ?? 0,
       wishlistCount: wishlist?.items.length ?? 0,
+      categoryName: (categoryId) => categories.find((c) => c.categoryId === categoryId)?.name,
       quantityInCart: (productId) => cart?.lines.find((l) => l.productId === productId)?.quantity ?? 0,
       inWishlist,
       isPending: (key) => pending.has(key),
@@ -114,7 +116,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       removeFromWishlist,
       toggleWishlist: (productId, name) => (inWishlist(productId) ? removeFromWishlist(productId, name) : addToWishlist(productId, name)),
     };
-  }, [status, error, cart, wishlist, pending, mutate, reload]);
+  }, [status, error, cart, wishlist, pending, mutate, reload, categories]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

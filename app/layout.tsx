@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
         <ToastProvider>
-          <StoreProvider>
+          <StoreProvider categories={categories}>
             <Header categories={categories} />
             <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
             <Footer />
