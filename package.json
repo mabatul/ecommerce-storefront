@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p ${STOREFRONT_PORT:-3001}",
     "build": "next build",
-    "start": "next start -p ${STOREFRONT_PORT:-3001}",
+    "start": "next start -p ${PORT:-${STOREFRONT_PORT:-3001}}",
     "lint": "next lint",
     "test": "vitest run"
   },

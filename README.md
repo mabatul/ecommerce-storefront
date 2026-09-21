@@ -91,10 +91,13 @@ npm run dev
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | `http://localhost:4000` | Backend URL used by the **browser** (cart/wishlist, "Load more"). Must be reachable from the visitor's machine. Baked into the client bundle at build time |
 | `API_URL` | *(empty)* | Optional backend URL for **server-side rendering only** (e.g. a private network address). Falls back to `NEXT_PUBLIC_API_URL` |
-| `STOREFRONT_PORT` | `3001` | Server port |
+| `PORT` | *(set by the host)* | Takes precedence when present (Railway injects it) |
+| `STOREFRONT_PORT` | `3001` | Server port when `PORT` isn't set |
 
 The storefront needs no secrets: it only uses the backend's public routes.
 The store name is a single constant, `BRAND` in [`lib/config.ts`](lib/config.ts).
+
+Note: `npm run start` reads these with shell syntax, so on Windows run it via Docker (or `npx next start -p 3001`).
 
 ## npm scripts
 
