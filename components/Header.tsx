@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { BRAND } from "@/lib/config";
@@ -25,6 +25,10 @@ export function Header({ categories }: { categories: Category[] }) {
   const pathname = usePathname();
   const { cartCount, wishlistCount } = useStore();
   const [query, setQuery] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // The mobile menu closes itself when you navigate somewhere.
+  useEffect(() => setMenuOpen(false), [pathname]);
 
   function onSearch(e: FormEvent) {
     e.preventDefault();
@@ -41,6 +45,19 @@ export function Header({ categories }: { categories: Category[] }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
+          aria-label="Menu"
+          className="rounded-full p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+        >
+          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            {menuOpen ? <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" /> : <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />}
+          </svg>
+        </button>
+
         <Link href="/" className="text-lg font-bold tracking-tight text-slate-900">
           {BRAND}
         </Link>
@@ -72,7 +89,31 @@ export function Header({ categories }: { categories: Category[] }) {
         </nav>
       </div>
 
-      <nav className="border-t border-slate-100" aria-label="Categories">
+      {menuOpen && (
+        <nav id="mobile-menu" className="border-t border-slate-100 md:hidden" aria-label="Menu">
+          <ul className="mx-auto max-w-6xl space-y-1 px-4 py-3">
+            <li>
+              <Link href="/products" className={`${navLink("/products")} block`}>
+                All products
+              </Link>
+            </li>
+            <li>
+              <Link href="/categories" className={`${navLink("/categories")} block`}>
+                Categories
+              </Link>
+            </li>
+            {categories.map((c) => (
+              <li key={c.categoryId}>
+                <Link href={`/categories/${encodeURIComponent(c.categoryId)}`} className={`${navLink(`/categories/${encodeURIComponent(c.categoryId)}`)} block pl-6`}>
+                  {c.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      <nav className="hidden border-t border-slate-100 md:block" aria-label="Categories">
         <ul className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2">
           <li>
             <Link href="/products" className={navLink("/products")}>
