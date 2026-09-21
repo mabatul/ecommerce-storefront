@@ -2,7 +2,7 @@ import path from "path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  resolve: { alias: { "@": path.resolve(__dirname) } },
+  resolve: { alias: { "@": path.resolve(import.meta.dirname) } },
   // tsconfig keeps JSX as "preserve" for Next; Vitest needs it compiled.
   oxc: { jsx: { runtime: "automatic" } },
   test: {
