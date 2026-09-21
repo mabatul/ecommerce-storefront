@@ -1,0 +1,24 @@
+# Starts this storefront on its own. Server-side rendering and the browser
+# both reach the backend at NEXT_PUBLIC_API_URL, so no Docker networking tricks.
+services:
+  storefront:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce-storefront
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+      - API_URL=${API_URL:-http://host.docker.internal:4000}
+      - STOREFRONT_PORT=${STOREFRONT_PORT:-3001}
+    ports:
+      - "${STOREFRONT_PORT:-3001}:3001"
+    volumes:
+      - .:/app
+      - storefront-node-modules:/app/node_modules
+      - storefront-next-cache:/app/.next
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  storefront-node-modules:
+  storefront-next-cache:
