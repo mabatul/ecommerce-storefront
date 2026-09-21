@@ -9,7 +9,7 @@ import { StockBadge } from "@/components/StockBadge";
 import { useStore } from "@/components/StoreProvider";
 import { WishlistButton } from "@/components/WishlistButton";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, categoryName }: { product: Product; categoryName?: string }) {
   const { addToCart, quantityInCart, isPending } = useStore();
   const soldOut = product.stock <= 0;
   const atLimit = quantityInCart(product.productId) >= maxOrderable(product.stock);
@@ -28,9 +28,11 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-3">
+        {categoryName && <span className="text-xs font-medium uppercase tracking-wide text-slate-400">{categoryName}</span>}
         <Link href={href} className="line-clamp-2 text-sm font-medium text-slate-900 hover:underline">
           {product.name}
         </Link>
+        {product.description && <p className="line-clamp-2 text-xs text-slate-500">{product.description}</p>}
         <div className="flex items-center justify-between gap-2">
           <span className="text-base font-semibold text-slate-900">{formatPrice(product.price)}</span>
           <StockBadge stock={product.stock} />

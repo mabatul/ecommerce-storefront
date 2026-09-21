@@ -4,20 +4,22 @@ import { useState } from "react";
 import Link from "next/link";
 import { ApiError, catalog } from "@/lib/api";
 import { hasActiveFilters, toApiQuery, type ListingFilters } from "@/lib/query";
-import type { Page, Product } from "@/lib/types";
+import type { Category, Page, Product } from "@/lib/types";
 import { Button } from "@/components/Button";
 import { ProductCard } from "@/components/ProductCard";
 import { EmptyState } from "@/components/states";
 
 interface ProductGridProps {
   initial: Page<Product>;
+  categories: Category[];
   filters: ListingFilters;
   clearHref: string;
 }
 
 // First page arrives server-rendered; "Load more" fetches the next cursor page from the browser.
 // Remount it (key) when the filters change.
-export function ProductGrid({ initial, filters, clearHref }: ProductGridProps) {
+export function ProductGrid({ initial, categories, filters, clearHref }: ProductGridProps) {
+  const categoryNames = new Map(categories.map((c) => [c.categoryId, c.name]));
   const [items, setItems] = useState(initial.items);
   const [cursor, setCursor] = useState(initial.nextCursor);
   const [hasMore, setHasMore] = useState(initial.hasMore);
@@ -64,7 +66,7 @@ export function ProductGrid({ initial, filters, clearHref }: ProductGridProps) {
     <div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {items.map((product) => (
-          <ProductCard key={product.productId} product={product} />
+          <ProductCard key={product.productId} product={product} categoryName={categoryNames.get(product.categoryId)} />
         ))}
       </div>
 
