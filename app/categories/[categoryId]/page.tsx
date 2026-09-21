@@ -8,6 +8,7 @@ import { FilterBar } from "@/components/FilterBar";
 import { ProductGrid } from "@/components/ProductGrid";
 import { ErrorState } from "@/components/states";
 
+// No loading.tsx here or above: streaming would send HTTP 200 before notFound() can turn it into 404.
 const getCategories = cache(() => catalog.categories());
 
 type Params = Promise<{ categoryId: string }>;

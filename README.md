@@ -31,8 +31,17 @@ together.
 
 On small screens the category bar becomes a menu button in the header.
 
-Every data page has loading (skeletons), empty, and error states, and
-unknown products/categories show a not-found page.
+Every data page has loading, empty, and error states, and unknown
+products/categories show a not-found page that answers a real HTTP `404`.
+
+Those two things pull in opposite directions in Next.js: a route-level
+`loading.tsx` makes the server send its `200` status before the page has fetched
+its data, so a missing product could never answer `404`. The listing pages
+(home, catalog, categories) stream a skeleton and live in the `app/(browse)`
+group; the product and category pages sit outside it, wait for their data
+on the server, and answer `404` when it isn't there. The trade-off is that
+opening one of them from a link shows no skeleton — the previous page stays until
+the new one is ready.
 
 ## How it works
 
@@ -114,7 +123,11 @@ Note: `npm run start` reads these with shell syntax, so on Windows run it via Do
 ## Structure
 
 ```
-app/                    Pages (App Router): home, products, categories, cart, wishlist, health
+app/(browse)/           Pages that stream a loading skeleton: home, products, categories
+app/products/[productId], app/categories/[categoryId]
+                        Detail pages: no skeleton, so a missing item answers HTTP 404
+app/cart, app/wishlist  Client-rendered pages (state lives in the browser)
+app/health              Liveness probe
 components/             ProductCard, ProductGrid, FilterBar, Header, StoreProvider, ...
 components/StoreProvider.tsx   Cart + wishlist state, talks to the API
 lib/api.ts              Typed client for the backend (catalog + cart/wishlist)

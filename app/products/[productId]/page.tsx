@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
 import { StockBadge } from "@/components/StockBadge";
 
+// No loading.tsx here or above: streaming would send HTTP 200 before notFound() can turn it into 404.
 // Shared by generateMetadata and the page so the API is called once per request.
 const getDetail = cache(async (productId: string) => {
   try {
